@@ -121,6 +121,7 @@ export async function GET(
   pdf.line(20, 115, 190, 115);
   pdf.setFont("helventica", "bold");
   pdf.text(`Total (${data.currency})`, 130, 130);
+  pdf.setFont("helventica", "normal");
   pdf.text(
     formatCurrency({
       amount: data.total,
@@ -133,9 +134,10 @@ export async function GET(
   // Note
 
   if (data.note) {
-    pdf.setFont("helventica");
+    pdf.setFont("helventica", "bold");
     pdf.setFontSize(10);
     pdf.text("Note:", 20, 150);
+    pdf.setFont("helventica", "normal");
     pdf.text(data.note, 20, 155);
   }
 
