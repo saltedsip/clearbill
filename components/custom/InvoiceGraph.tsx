@@ -52,8 +52,6 @@ export default async function InvoiceGraph() {
   const session = await requireUser();
   const data = await getInvoices(session.user?.id as string);
 
-  console.log("Graph data:", data);
-
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
