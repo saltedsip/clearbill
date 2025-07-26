@@ -99,7 +99,7 @@ export default function CreateInvoice({
                   key={fields.invoiceNumber.key}
                   defaultValue={fields.invoiceNumber.initialValue}
                   className="rounded-l-none"
-                  placeholder="INV0001"
+                  placeholder="001"
                 />
               </div>
               <p className="text-sm text-red-500">

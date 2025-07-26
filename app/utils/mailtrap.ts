@@ -78,7 +78,7 @@ function generateInvoiceHtml({
     </head>
     <body style="margin:0; padding:0; background-color:#f4f4f7; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
 
-      <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7; padding:40px 0;">
+      <table width="100%" height="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7; padding:40px 0;">
         <tr>
           <td align="center">
             <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.05);">

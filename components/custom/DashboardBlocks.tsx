@@ -16,5 +16,15 @@ export default async function DashboardBlocks() {
     },
   });
 
-  return <StatsOverviewCards invoices={invoices} />;
+  async function getExchangeRates() {
+    const res = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+    const json = await res.json();
+    return json.rates; // like { EUR: 1.1, GBP: 1.3 }
+  }
+
+  const exchangeRates = await getExchangeRates();
+
+  return (
+    <StatsOverviewCards invoices={invoices} exchangeRates={exchangeRates} />
+  );
 }

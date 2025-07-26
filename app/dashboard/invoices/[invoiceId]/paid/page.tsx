@@ -61,7 +61,7 @@ export default async function MarkAsPaid({ params }: { params: Params }) {
               await MarkAsPaidAction(invoiceId);
             }}
           >
-            <SubmitButton variant={"destructive"} text="Delete Invoice" />
+            <SubmitButton text="Mark as paid" />
           </form>
         </CardFooter>
       </Card>

@@ -1,23 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  TrendingUp,
-  TrendingDown,
-  FileText,
-  Banknote,
-  Clock,
-} from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { TrendingUp, FileText, Banknote, Clock } from "lucide-react";
 
-import {
-  Card,
-  CardHeader,
-  CardDescription,
-  CardTitle,
-  CardFooter,
-  CardAction,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectTrigger,
@@ -25,6 +11,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { formatCurrency } from "@/app/utils/formatCurrency";
 
 interface Invoice {
   total: number;
@@ -33,66 +20,93 @@ interface Invoice {
   date: string | Date;
 }
 
-export function StatsOverviewCards({ invoices }: { invoices: Invoice[] }) {
-  const [currency, setCurrency] = useState("All");
+interface StatsOverviewCardsProps {
+  invoices: Invoice[];
+  exchangeRates: Record<string, number>; // Example: { USD: 1, EUR: 1.12, GBP: 1.3 }
+}
+
+export function StatsOverviewCards({
+  invoices,
+  exchangeRates,
+}: StatsOverviewCardsProps) {
+  const allowedCurrencies = ["USD", "EUR", "GBP"] as const;
+  type AllowedCurrency = (typeof allowedCurrencies)[number];
+
+  function isAllowedCurrency(val: string): val is AllowedCurrency {
+    return allowedCurrencies.includes(val as AllowedCurrency);
+  }
 
   const currencyOptions = useMemo(() => {
     const set = new Set(invoices.map((inv) => inv.currency));
-    return ["All", ...Array.from(set)];
+    return ["ALL", ...Array.from(set)];
   }, [invoices]);
 
+  const [currency, setCurrency] = useState(currencyOptions[0] ?? "ALL");
+
+  useEffect(() => {
+    if (!currencyOptions.includes(currency)) {
+      setCurrency(currencyOptions[0] ?? "ALL");
+    }
+  }, [currencyOptions, currency]);
+
   const filtered = useMemo(() => {
-    return currency === "All"
-      ? invoices
-      : invoices.filter((inv) => inv.currency === currency);
+    if (currency === "ALL") return invoices;
+    return invoices.filter((inv) => inv.currency === currency);
   }, [invoices, currency]);
 
-  const totalRevenue = filtered.reduce((acc, i) => acc + i.total, 0);
+  const totalRevenue = useMemo(() => {
+    if (currency === "ALL") {
+      return invoices.reduce((acc, i) => {
+        const rate = exchangeRates[i.currency] ?? 1;
+        return acc + i.total * rate;
+      }, 0);
+    } else {
+      return filtered.reduce((acc, i) => acc + i.total, 0);
+    }
+  }, [currency, invoices, filtered, exchangeRates]);
+
   const totalInvoices = filtered.length;
   const paidInvoices = filtered.filter((i) => i.status === "PAID").length;
   const openInvoices = filtered.filter((i) => i.status === "PENDING").length;
 
+  const displayCurrency: AllowedCurrency =
+    currency === "ALL" ? "USD" : isAllowedCurrency(currency) ? currency : "USD"; // fallback for unsupported currency
+
   const stats = [
     {
       title: "Total Revenue",
-      value: `${totalRevenue.toLocaleString()} ${currency}`,
-      description: "Revenue across all invoices",
+      value: formatCurrency({
+        amount: totalRevenue,
+        currency: displayCurrency,
+      }),
+      footer:
+        currency === "ALL"
+          ? "Revenue in USD (converted)"
+          : "Revenue from this currency",
       icon: <TrendingUp className="size-4" />,
-      badge: "+12.5%",
-      trend: "up",
-      color: "from-green-100 to-white",
     },
     {
-      title: "Invoices",
+      title: "Total Invoices",
       value: `${totalInvoices}`,
-      description: "Total number of invoices",
+      footer: "Total number of invoices",
       icon: <FileText className="size-4" />,
-      badge: "+3.2%",
-      trend: "up",
-      color: "from-blue-100 to-white",
     },
     {
       title: "Paid Invoices",
       value: `${paidInvoices}`,
-      description: "Payments completed",
+      footer: "Total invoices that have been paid",
       icon: <Banknote className="size-4" />,
-      badge: "+8.1%",
-      trend: "up",
-      color: "from-emerald-100 to-white",
     },
     {
-      title: "Open Invoices",
+      title: "Pending Invoices",
       value: `${openInvoices}`,
-      description: "Pending payments",
+      footer: "Invoices that are currently pending",
       icon: <Clock className="size-4" />,
-      badge: "-5%",
-      trend: "down",
-      color: "from-red-100 to-white",
     },
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div className="col-span-full flex justify-end mb-2">
         <Select value={currency} onValueChange={setCurrency}>
           <SelectTrigger className="w-[200px]">
@@ -101,7 +115,7 @@ export function StatsOverviewCards({ invoices }: { invoices: Invoice[] }) {
           <SelectContent>
             {currencyOptions.map((curr) => (
               <SelectItem key={curr} value={curr}>
-                {curr}
+                {curr === "ALL" ? "All Currencies" : curr}
               </SelectItem>
             ))}
           </SelectContent>
@@ -109,32 +123,15 @@ export function StatsOverviewCards({ invoices }: { invoices: Invoice[] }) {
       </div>
 
       {stats.map((stat) => (
-        <Card
-          key={stat.title}
-          className={`@container/card bg-gradient-to-t ${stat.color} shadow-sm`}
-          data-slot="card"
-        >
-          <CardHeader>
-            <CardDescription>{stat.title}</CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-              {stat.value}
-            </CardTitle>
-            <CardAction>
-              <Badge variant="outline">
-                {stat.trend === "up" ? <TrendingUp /> : <TrendingDown />}
-                {stat.badge}
-              </Badge>
-            </CardAction>
+        <Card key={stat.title} className="shadow-sm">
+          <CardHeader className="flex justify-between space-y-0 mb-2">
+            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+            {stat.icon}
           </CardHeader>
-          <CardFooter className="flex-col items-start gap-1.5 text-sm">
-            <div className="line-clamp-1 flex gap-2 font-medium space-y-0">
-              {stat.description} {stat.icon}
-            </div>
-            <div className="text-muted-foreground">
-              {stat.trend === "up" ? "Trending up" : "Trending down"} this
-              period
-            </div>
-          </CardFooter>
+          <CardContent>
+            <h2 className="text-2xl font-bold">{stat.value}</h2>
+            <p className="text-xs text-muted-foreground">{stat.footer}</p>
+          </CardContent>
         </Card>
       ))}
     </div>

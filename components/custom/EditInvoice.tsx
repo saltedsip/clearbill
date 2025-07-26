@@ -93,7 +93,7 @@ export default function EditInvoice({ data }: IAppProps) {
                   key={fields.invoiceNumber.key}
                   defaultValue={data.invoiceNumber}
                   className="rounded-l-none"
-                  placeholder="INV0001"
+                  placeholder="001"
                 />
               </div>
               <p className="text-sm text-red-500">

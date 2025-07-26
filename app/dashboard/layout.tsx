@@ -4,7 +4,12 @@ import Image from "next/image";
 import Logo from "@/public/logo.png";
 import DashboardLinks from "@/components/custom/DashboardLinks";
 import Link from "next/link";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu, User2 } from "lucide-react";
 import {
@@ -71,7 +76,8 @@ export default async function DashboardLayout({
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
-                <nav className="grid gap-2 mt-10">
+                <SheetTitle></SheetTitle>
+                <nav className="grid gap-2 px-2 mt-10">
                   <DashboardLinks />
                 </nav>
               </SheetContent>
@@ -96,6 +102,9 @@ export default async function DashboardLayout({
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard/invoices">Invoices</Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/settings">Settings</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <form
@@ -117,7 +126,7 @@ export default async function DashboardLayout({
           </main>
         </div>
       </div>
-      <Toaster richColors closeButton />
+      <Toaster richColors closeButton theme="light" />
     </>
   );
 }

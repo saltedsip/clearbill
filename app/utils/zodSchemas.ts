@@ -25,3 +25,10 @@ export const invoiceSchema = z.object({
   invoiceItemQuantity: z.number().min(1, "Quantity min 1"),
   invoiceItemRate: z.number().min(1, "Rate min 1"),
 });
+
+export const userSettingsSchema = z.object({
+  id: z.string(),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  address: z.string().min(1, "Address is required"),
+});
