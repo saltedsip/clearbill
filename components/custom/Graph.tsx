@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
-import { Line, LineChart, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 type chartData = {
   date: string;
@@ -16,7 +16,7 @@ interface iAppProps {
 const chartConfig = {
   amount: {
     label: "Amount",
-    color: "hsl(var(--primary))",
+    color: "var(--primary)",
   },
 };
 
@@ -30,19 +30,31 @@ export default function Graph({ data }: iAppProps) {
   }
   return (
     <>
-      <ChartContainer config={chartConfig} className="min-h-[300px]">
+      <ChartContainer
+        config={chartConfig}
+        className="aspect-auto h-[250px] w-full"
+      >
         <LineChart accessibilityLayer data={data}>
+          <CartesianGrid vertical={false} />
           <XAxis
             dataKey="date"
+            scale="point"
+            domain={["dataMin", "dataMax"]}
+            padding={{ left: 0, right: 0 }}
             tickMargin={8}
-            tickFormatter={(str) =>
-              new Date(str).toLocaleDateString("en-US", {
+            minTickGap={32}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => {
+              const date = new Date(value);
+              return date.toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
-              })
-            }
+              });
+            }}
           />
           <YAxis
+            width={30}
             tickFormatter={(value) => {
               if (value >= 1_000_000_000) return `${value / 1_000_000_000}B`;
               if (value >= 1_000_000) return `${value / 1_000_000}M`;
@@ -50,14 +62,27 @@ export default function Graph({ data }: iAppProps) {
               return value;
             }}
           />
-
-          <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+          <ChartTooltip
+            content={
+              <ChartTooltipContent
+                className="w-[150px]"
+                nameKey="Amount"
+                indicator="line"
+                labelFormatter={(value) => {
+                  return new Date(value).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  });
+                }}
+              />
+            }
+          />
           <Line
             dataKey="amount"
-            stroke={chartConfig.amount.color}
             type="monotone"
+            stroke={chartConfig.amount.color}
             strokeWidth={2}
-            isAnimationActive={false}
           />
         </LineChart>
       </ChartContainer>

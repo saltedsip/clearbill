@@ -42,7 +42,7 @@ export async function POST(
         amount: invoiceData.total,
         currency: invoiceData.currency as any,
       }),
-      downloadUrl: `http://localhost:3000/api/invoice/${invoiceData.id}`,
+      downloadUrl: `@/api/invoice/${invoiceData.id}`,
     });
 
     return NextResponse.json({ success: true });

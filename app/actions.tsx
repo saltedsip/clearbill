@@ -84,7 +84,7 @@ export async function createInvoice(prevState: any, formData: FormData) {
       amount: data.total,
       currency: data.currency as any,
     }),
-    downloadUrl: `http://localhost:3000/api/invoice/${data.id}`,
+    downloadUrl: `@/api/invoice/${data.id}`,
   });
 
   return redirect("/dashboard/invoices");
@@ -140,7 +140,7 @@ export async function editInvoice(prevState: any, formData: FormData) {
       amount: data.total,
       currency: data.currency as any,
     }),
-    downloadUrl: `http://localhost:3000/api/invoice/${data.id}`,
+    downloadUrl: `@/api/invoice/${data.id}`,
   });
 
   return redirect("/dashboard/invoices");
