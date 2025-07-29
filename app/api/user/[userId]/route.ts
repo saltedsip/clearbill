@@ -1,14 +1,16 @@
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/utils/db";
 import requireUser from "@/app/utils/hooks";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export async function PUT(
-  req: NextRequest,
-  context: { params: { userId: string } }
-) {
+type Context = {
+  params: {
+    userId: string;
+  };
+};
+
+export async function PUT(req: NextRequest, context: Context) {
   const session = await requireUser();
-  const { userId } = context.params;
+  const userId = context.params.userId;
 
   if (!session || session.user?.id !== userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
