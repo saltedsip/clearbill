@@ -1,13 +1,14 @@
 import { prisma } from "@/app/utils/db";
 import requireUser from "@/app/utils/hooks";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { userId: string } }
+  req: NextRequest,
+  context: { params: { userId: string } }
 ) {
   const session = await requireUser();
-  const { userId } = params;
+  const { userId } = context.params;
 
   if (!session || session.user?.id !== userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,7 +21,6 @@ export async function PUT(
   }
 
   try {
-    // Optional: check for email uniqueness
     const existing = await prisma.user.findFirst({
       where: {
         email,
