@@ -10,10 +10,10 @@ import {
 import { prisma } from "./utils/db";
 import { redirect } from "next/navigation";
 import { sendInvoiceEmail, sendInvoiceUpdateEmail } from "./utils/mailtrap";
-import { formatCurrency } from "./utils/formatCurrency";
 import { formatDueDate } from "./utils/formatDueDate";
+import formatCurrency from "./utils/formatCurrency";
 
-export async function onboardUser(prevState: any, formData: FormData) {
+export async function onboardUser(_: unknown, formData: FormData) {
   const session = await requireUser();
 
   const submission = parseWithZod(formData, {
@@ -23,7 +23,7 @@ export async function onboardUser(prevState: any, formData: FormData) {
   if (submission.status !== "success") {
     return submission.reply();
   }
-  const data = await prisma.user.update({
+  await prisma.user.update({
     where: {
       id: session.user?.id,
     },
@@ -37,7 +37,7 @@ export async function onboardUser(prevState: any, formData: FormData) {
   return redirect("/dashboard");
 }
 
-export async function createInvoice(prevState: any, formData: FormData) {
+export async function createInvoice(_: unknown, formData: FormData) {
   const session = await requireUser();
 
   const submission = parseWithZod(formData, {
@@ -82,7 +82,7 @@ export async function createInvoice(prevState: any, formData: FormData) {
     dueDate: formattedDueDate,
     total: formatCurrency({
       amount: data.total,
-      currency: data.currency as any,
+      currency: data.currency,
     }),
     downloadUrl: `@/api/invoice/${data.id}`,
   });
@@ -90,7 +90,7 @@ export async function createInvoice(prevState: any, formData: FormData) {
   return redirect("/dashboard/invoices");
 }
 
-export async function editInvoice(prevState: any, formData: FormData) {
+export async function editInvoice(_: unknown, formData: FormData) {
   const session = await requireUser();
 
   const submission = parseWithZod(formData, {
@@ -138,7 +138,7 @@ export async function editInvoice(prevState: any, formData: FormData) {
     dueDate: formattedDueDate,
     total: formatCurrency({
       amount: data.total,
-      currency: data.currency as any,
+      currency: data.currency,
     }),
     downloadUrl: `@/api/invoice/${data.id}`,
   });
@@ -149,7 +149,7 @@ export async function editInvoice(prevState: any, formData: FormData) {
 export async function DeleteInvoice(invoiceId: string) {
   const session = await requireUser();
 
-  const data = await prisma.invoice.delete({
+  await prisma.invoice.delete({
     where: {
       id: invoiceId,
       userId: session.user?.id,
@@ -162,7 +162,7 @@ export async function DeleteInvoice(invoiceId: string) {
 export async function MarkAsPaidAction(invoiceId: string) {
   const session = await requireUser();
 
-  const data = await prisma.invoice.update({
+  await prisma.invoice.update({
     where: {
       id: invoiceId,
       userId: session.user?.id,
@@ -175,7 +175,7 @@ export async function MarkAsPaidAction(invoiceId: string) {
   return redirect("/dashboard/invoices");
 }
 
-export async function updateUserProfile(prevState: any, formData: FormData) {
+export async function updateUserProfile(_: unknown, formData: FormData) {
   const session = await requireUser();
 
   const submission = parseWithZod(formData, {
@@ -186,7 +186,7 @@ export async function updateUserProfile(prevState: any, formData: FormData) {
     return submission.reply();
   }
 
-  const data = await prisma.user.update({
+  await prisma.user.update({
     where: {
       id: session.user?.id,
     },

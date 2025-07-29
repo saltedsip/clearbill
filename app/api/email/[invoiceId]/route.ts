@@ -1,5 +1,5 @@
 import { prisma } from "@/app/utils/db";
-import { formatCurrency } from "@/app/utils/formatCurrency";
+import formatCurrency from "@/app/utils/formatCurrency";
 import { formatDueDate } from "@/app/utils/formatDueDate";
 import requireUser from "@/app/utils/hooks";
 import { sendReminderEmail } from "@/app/utils/mailtrap";
@@ -40,13 +40,14 @@ export async function POST(
       dueDate: formattedDueDate,
       total: formatCurrency({
         amount: invoiceData.total,
-        currency: invoiceData.currency as any,
+        currency: invoiceData.currency,
       }),
       downloadUrl: `@/api/invoice/${invoiceData.id}`,
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("Reminder email error:", error); // ✅ use or remove
     return NextResponse.json(
       { error: "Failed to send reminder email" },
       { status: 500 }

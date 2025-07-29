@@ -92,7 +92,7 @@ model Invoice {
   clientName             String
   clientEmail            String
   clientAddress          String
-  currency               String
+  currency               Currency
   invoiceName            String
   invoiceNumber          Int
   note                   String?
@@ -109,4 +109,10 @@ model Invoice {
 enum InvoiceStatus {
   PAID
   PENDING
+}
+
+enum Currency {
+  USD
+  EUR
+  GBP
 }

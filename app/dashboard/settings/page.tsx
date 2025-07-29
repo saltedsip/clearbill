@@ -1,9 +1,7 @@
 import { prisma } from "@/app/utils/db";
 import requireUser from "@/app/utils/hooks";
 import SettingsForm from "@/components/custom/SettingsForm";
-import { Skeleton } from "@/components/ui/skeleton";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 async function getUserData(userId: string) {
   const user = await prisma.user.findUnique({

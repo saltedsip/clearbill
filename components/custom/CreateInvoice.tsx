@@ -22,7 +22,8 @@ import { createInvoice } from "@/app/actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { invoiceSchema } from "@/app/utils/zodSchemas";
-import { formatCurrency } from "@/app/utils/formatCurrency";
+import formatCurrency from "@/app/utils/formatCurrency";
+import { Currency } from "@prisma/client";
 
 interface IAppProps {
   firstName: string;
@@ -55,7 +56,7 @@ export default function CreateInvoice({
 
   const [rate, setRate] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState<Currency>("USD");
 
   const calculateTotal = (Number(quantity) || 0) * (Number(rate) || 0);
 
@@ -113,7 +114,7 @@ export default function CreateInvoice({
                 name={fields.currency.name}
                 key={fields.currency.key}
                 defaultValue="USD"
-                onValueChange={(value) => setCurrency(value)}
+                onValueChange={(value) => setCurrency(value as Currency)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Currency" />
@@ -303,7 +304,7 @@ export default function CreateInvoice({
                 <Input
                   value={formatCurrency({
                     amount: calculateTotal,
-                    currency: currency as any,
+                    currency: currency,
                   })}
                   disabled
                 />
@@ -318,7 +319,7 @@ export default function CreateInvoice({
                 <span>
                   {formatCurrency({
                     amount: calculateTotal,
-                    currency: currency as any,
+                    currency: currency,
                   })}
                 </span>
               </div>
@@ -327,7 +328,7 @@ export default function CreateInvoice({
                 <span className="font-medium underline underline-offset-2">
                   {formatCurrency({
                     amount: calculateTotal,
-                    currency: currency as any,
+                    currency: currency,
                   })}
                 </span>
               </div>

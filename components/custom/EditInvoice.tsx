@@ -22,11 +22,11 @@ import { editInvoice } from "@/app/actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { invoiceSchema } from "@/app/utils/zodSchemas";
-import { formatCurrency } from "@/app/utils/formatCurrency";
-import { Prisma } from "@prisma/client";
+import { Currency, Prisma } from "@prisma/client";
+import formatCurrency from "@/app/utils/formatCurrency";
 
 interface IAppProps {
-  data: Prisma.InvoiceGetPayload<{}>;
+  data: Prisma.InvoiceGetPayload<true>;
 }
 
 export default function EditInvoice({ data }: IAppProps) {
@@ -48,7 +48,7 @@ export default function EditInvoice({ data }: IAppProps) {
 
   const [rate, setRate] = useState(data.invoiceItemRate.toString());
   const [quantity, setQuantity] = useState(data.invoiceItemQuantity.toString());
-  const [currency, setCurrency] = useState(data.currency);
+  const [currency, setCurrency] = useState<Currency>(data.currency);
 
   const calculateTotal = (Number(quantity) || 0) * (Number(rate) || 0);
 
@@ -107,7 +107,7 @@ export default function EditInvoice({ data }: IAppProps) {
                 name={fields.currency.name}
                 key={fields.currency.key}
                 defaultValue="USD"
-                onValueChange={(value) => setCurrency(value)}
+                onValueChange={(value) => setCurrency(value as Currency)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Currency" />
@@ -297,7 +297,7 @@ export default function EditInvoice({ data }: IAppProps) {
                 <Input
                   value={formatCurrency({
                     amount: calculateTotal,
-                    currency: currency as any,
+                    currency: currency,
                   })}
                   disabled
                 />
@@ -312,7 +312,7 @@ export default function EditInvoice({ data }: IAppProps) {
                 <span>
                   {formatCurrency({
                     amount: calculateTotal,
-                    currency: currency as any,
+                    currency: currency,
                   })}
                 </span>
               </div>
@@ -321,7 +321,7 @@ export default function EditInvoice({ data }: IAppProps) {
                 <span className="font-medium underline underline-offset-2">
                   {formatCurrency({
                     amount: calculateTotal,
-                    currency: currency as any,
+                    currency: currency,
                   })}
                 </span>
               </div>

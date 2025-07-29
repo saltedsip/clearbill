@@ -10,9 +10,9 @@ import {
 import InvoiceActions from "./InvoiceActions";
 import { prisma } from "@/app/utils/db";
 import requireUser from "@/app/utils/hooks";
-import { formatCurrency } from "@/app/utils/formatCurrency";
 import { Badge } from "../ui/badge";
 import EmptyState from "./EmptyState";
+import formatCurrency from "@/app/utils/formatCurrency";
 
 async function getData(userId: string) {
   const data = await prisma.invoice.findMany({
@@ -70,7 +70,7 @@ export default async function InvoiceList() {
                   <TableCell>
                     {formatCurrency({
                       amount: invoice.total,
-                      currency: invoice.currency as any,
+                      currency: invoice.currency,
                     })}
                   </TableCell>
                   <TableCell>

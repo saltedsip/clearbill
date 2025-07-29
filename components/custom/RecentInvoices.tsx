@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { prisma } from "@/app/utils/db";
 import requireUser from "@/app/utils/hooks";
-import { formatCurrency } from "@/app/utils/formatCurrency";
+import formatCurrency from "@/app/utils/formatCurrency";
 
 async function getData(userId: string) {
   const data = await prisma.invoice.findMany({
@@ -50,7 +50,7 @@ export default async function RecentInvoices() {
             <p className="ml-auto font-medium text-sm">
               {formatCurrency({
                 amount: item.total,
-                currency: item.currency as any,
+                currency: item.currency,
               })}
             </p>
           </div>

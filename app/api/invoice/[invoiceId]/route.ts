@@ -2,7 +2,7 @@ import { prisma } from "@/app/utils/db";
 import { NextResponse } from "next/server";
 import jsPDF from "jspdf";
 import { formatDueDate } from "@/app/utils/formatDueDate";
-import { formatCurrency } from "@/app/utils/formatCurrency";
+import formatCurrency from "@/app/utils/formatCurrency";
 
 export async function GET(
   request: Request,
@@ -103,7 +103,7 @@ export async function GET(
   pdf.text(
     formatCurrency({
       amount: data.invoiceItemRate,
-      currency: data.currency as any,
+      currency: data.currency,
     }),
     130,
     110
@@ -111,7 +111,7 @@ export async function GET(
   pdf.text(
     formatCurrency({
       amount: data.total,
-      currency: data.currency as any,
+      currency: data.currency,
     }),
     160,
     110
@@ -125,7 +125,7 @@ export async function GET(
   pdf.text(
     formatCurrency({
       amount: data.total,
-      currency: data.currency as any,
+      currency: data.currency,
     }),
     160,
     130

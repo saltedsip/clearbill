@@ -1,3 +1,4 @@
+import { Currency } from "@prisma/client";
 import { z } from "zod";
 
 export const onboardingSchema = z.object({
@@ -5,6 +6,9 @@ export const onboardingSchema = z.object({
   lastName: z.string().min(2, "Last name is required"),
   address: z.string().min(2, "Address is required"),
 });
+
+export const currencySchema = z.nativeEnum(Currency);
+export type CurrencyType = z.infer<typeof currencySchema>;
 
 export const invoiceSchema = z.object({
   invoiceName: z.string().min(1, "Invoice name is required"),
@@ -18,7 +22,7 @@ export const invoiceSchema = z.object({
   clientName: z.string().min(1, "Client name is required"),
   clientEmail: z.string().email("Invalid Email address"),
   clientAddress: z.string().min(1, "Client address is required"),
-  currency: z.string().min(1, "Currency is required"),
+  currency: currencySchema,
   invoiceNumber: z.number().min(1, "Minimun invoice number of 1"),
   note: z.string().optional(),
   invoiceItemDescription: z.string().min(1, "Description is required"),

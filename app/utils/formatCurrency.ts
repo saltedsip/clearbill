@@ -1,10 +1,12 @@
+import type { Currency } from "@prisma/client";
+
 interface FormatCurrencyProps {
   amount: number;
-  currency: "USD" | "EUR" | "GBP";
-  locale?: string; // Optional
+  currency: Currency;
+  locale?: string;
 }
 
-export function formatCurrency({
+export default function formatCurrency({
   amount,
   currency,
   locale = "en-US",
