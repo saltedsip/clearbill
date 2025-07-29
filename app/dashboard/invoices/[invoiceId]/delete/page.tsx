@@ -16,7 +16,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import WarningGif from "@/public/Warning.gif";
 
-export async function Authorize(invoiceId: string, userId: string) {
+async function Authorize(invoiceId: string, userId: string) {
   const data = await prisma.invoice.findUnique({
     where: {
       id: invoiceId,

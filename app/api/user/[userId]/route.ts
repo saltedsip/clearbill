@@ -1,22 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/db";
 import requireUser from "@/app/utils/hooks";
 
-type Context = {
-  params: {
-    userId: string;
-  };
-};
+export async function PUT(
+  request: Request,
+  {
+    params,
+  }: {
+    params: Promise<{ userId: string }>;
+  }
+) {
+  const { userId } = await params;
 
-export async function PUT(req: NextRequest, context: Context) {
   const session = await requireUser();
-  const userId = context.params.userId;
 
   if (!session || session.user?.id !== userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { firstName, lastName, email, address } = await req.json();
+  const { firstName, lastName, email, address } = await request.json();
 
   if (!firstName || !lastName || !email || !address) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
