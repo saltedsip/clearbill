@@ -42,12 +42,15 @@ export async function POST(
         amount: invoiceData.total,
         currency: invoiceData.currency,
       }),
-      downloadUrl: `@/api/invoice/${invoiceData.id}`,
+      downloadUrl:
+        process.env.NODE_ENV !== "production"
+          ? `http://.localhost:3000/api/invoice/${invoiceData.id}`
+          : `https://clearbill-jzl6.vercel.app/api/invoice/${invoiceData.id}`,
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Reminder email error:", error); // ✅ use or remove
+    console.error("Reminder email error:", error);
     return NextResponse.json(
       { error: "Failed to send reminder email" },
       { status: 500 }

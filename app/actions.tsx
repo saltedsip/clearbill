@@ -84,7 +84,10 @@ export async function createInvoice(_: unknown, formData: FormData) {
       amount: data.total,
       currency: data.currency,
     }),
-    downloadUrl: `@/api/invoice/${data.id}`,
+    downloadUrl:
+      process.env.NODE_ENV !== "production"
+        ? `http://.localhost:3000/api/invoice/${data.id}`
+        : `https://clearbill-jzl6.vercel.app/api/invoice/${data.id}`,
   });
 
   return redirect("/dashboard/invoices");
@@ -140,7 +143,10 @@ export async function editInvoice(_: unknown, formData: FormData) {
       amount: data.total,
       currency: data.currency,
     }),
-    downloadUrl: `@/api/invoice/${data.id}`,
+    downloadUrl:
+      process.env.NODE_ENV !== "production"
+        ? `http://.localhost:3000/api/invoice/${data.id}`
+        : `https://clearbill-jzl6.vercel.app/api/invoice/${data.id}`,
   });
 
   return redirect("/dashboard/invoices");
