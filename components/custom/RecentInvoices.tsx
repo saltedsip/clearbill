@@ -1,4 +1,3 @@
-import React, { Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { prisma } from "@/app/utils/db";

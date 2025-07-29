@@ -11,7 +11,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { formatCurrency } from "@/app/utils/formatCurrency";
+import formatCurrency from "@/app/utils/formatCurrency";
 
 interface Invoice {
   total: number;
